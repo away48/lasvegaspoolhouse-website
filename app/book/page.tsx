@@ -171,11 +171,16 @@ function BookingContent() {
               </>
             ) : (
               <div className="text-center py-8">
-                <div className="text-5xl mb-4">😔</div>
-                <h3 className="text-xl font-semibold mb-2">Not Available</h3>
+                <div className="text-5xl mb-4">{availability.minNights && availability.nights < availability.minNights ? '📅' : '😔'}</div>
+                <h3 className="text-xl font-semibold mb-2">
+                  {availability.minNights && availability.nights < availability.minNights 
+                    ? `${availability.minNights}-Night Minimum Required` 
+                    : 'Not Available'}
+                </h3>
                 <p className="text-slate-600">
-                  Sorry, the property is not available for your selected dates.
-                  Try different dates or contact us for alternatives.
+                  {availability.minNights && availability.nights < availability.minNights 
+                    ? `This property requires a minimum stay of ${availability.minNights} nights. You selected ${availability.nights} night${availability.nights === 1 ? '' : 's'}.`
+                    : 'Sorry, the property is not available for your selected dates. Try different dates or contact us for alternatives.'}
                 </p>
               </div>
             )}

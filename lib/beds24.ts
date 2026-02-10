@@ -20,9 +20,12 @@ export interface AvailabilityResult {
   price: number | null;
   pricePerNight: number | null;
   nights: number;
+  minNights: number;
   bookingUrl?: string;
   error?: string;
 }
+
+const MIN_NIGHTS = 2;
 
 export async function getAvailability(
   checkIn: string, // YYYYMMDD format
@@ -34,6 +37,18 @@ export async function getAvailability(
   const coDate = new Date(checkOut.slice(0,4) + '-' + checkOut.slice(4,6) + '-' + checkOut.slice(6,8));
   const nights = Math.ceil((coDate.getTime() - ciDate.getTime()) / (1000 * 60 * 60 * 24));
 
+  // Check minimum nights requirement
+  if (nights < MIN_NIGHTS) {
+    return {
+      available: false,
+      price: null,
+      pricePerNight: null,
+      nights,
+      minNights: MIN_NIGHTS,
+      error: `Minimum stay is ${MIN_NIGHTS} nights`,
+    };
+  }
+
   // If prop ID not configured, return placeholder availability
   if (PROP_ID === 'NEEDS_CONFIG') {
     console.warn('Beds24 PROP_ID not configured - returning placeholder data');
@@ -42,6 +57,7 @@ export async function getAvailability(
       price: 299 * nights,
       pricePerNight: 299,
       nights,
+      minNights: MIN_NIGHTS,
       bookingUrl: '#', // Will be Beds24 or Stripe checkout
     };
   }
@@ -82,6 +98,7 @@ export async function getAvailability(
       price: totalPrice || null,
       pricePerNight: totalPrice ? Math.round(totalPrice / nights) : null,
       nights,
+      minNights: MIN_NIGHTS,
       bookingUrl: available ? `https://beds24.com/booking2.php?propid=${PROP_ID}&checkin=${checkIn}` : undefined,
     };
     
@@ -92,6 +109,7 @@ export async function getAvailability(
       price: 299 * nights,
       pricePerNight: 299,
       nights,
+      minNights: MIN_NIGHTS,
       error: 'Could not check real-time availability',
     };
   }

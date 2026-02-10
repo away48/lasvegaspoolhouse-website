@@ -20,10 +20,10 @@ A luxury-focused booking website for Las Vegas Pool House vacation rental, desig
 ## Current Status
 - ✅ Homepage created (Vegas-themed)
 - ✅ Booking page with availability check
-- ✅ Beds24 API client (placeholder config)
-- ⏳ Needs Beds24 property ID
+- ✅ Beds24 API configured (Property ID: 17759, Room: 43516)
+- ✅ Vercel deployed with env vars
 - ⏳ Needs real photos
-- ⏳ Needs Vercel deployment
+- ⏳ Connect domain (lasvegaspoolhouse.com)
 
 ## TODO for Alex
 
