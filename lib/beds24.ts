@@ -7,12 +7,12 @@
 
 const BEDS24_API = 'https://api.beds24.com/json';
 
-// Use environment variable, fallback to placeholder
-const PROP_ID = process.env.BEDS24_PROP_ID || 'NEEDS_CONFIG';
+// Las Vegas Pool House property
+const PROP_ID = process.env.BEDS24_PROP_ID || '17759';
 
-// Room configuration - update once we know the property structure
+// Room configuration
 export const ROOM_INFO: Record<string, { name: string; maxGuests: number; minPrice: number }> = {
-  'pool-house': { name: 'Pool House', maxGuests: 12, minPrice: 299 },
+  '43516': { name: 'Private Pool House', maxGuests: 12, minPrice: 299 },
 };
 
 export interface AvailabilityResult {
