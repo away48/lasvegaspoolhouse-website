@@ -27,7 +27,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center overflow-hidden">
         {/* Vegas lights effect */}
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1605833556294-ea5c7a74f57d?q=80&w=2074')] bg-cover bg-center opacity-40" />
+        <div className="absolute inset-0 bg-[url('https://media.xmlcal.com/pic/p0001/7759/33.png')] bg-cover bg-center opacity-40" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-slate-900/50" />
         
         {/* Animated glow */}
@@ -134,7 +134,7 @@ export default function Home() {
                 <p className="text-amber-400 font-medium mb-1">Featured Property</p>
                 <h3 className="text-3xl font-bold">The Pool House</h3>
               </div>
-              <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2070')] bg-cover bg-center group-hover:scale-105 transition-transform duration-500" />
+              <div className="w-full h-full bg-[url('https://media.xmlcal.com/pic/p0001/7759/02.png')] bg-cover bg-center group-hover:scale-105 transition-transform duration-500" />
             </div>
             
             <div>
@@ -233,9 +233,7 @@ export default function Home() {
             </div>
             
             <div className="aspect-square rounded-3xl overflow-hidden shadow-xl bg-slate-200">
-              <div className="w-full h-full flex items-center justify-center text-slate-400 text-lg">
-                Map / Photo placeholder
-              </div>
+              <div className="w-full h-full bg-[url('https://media.xmlcal.com/pic/p0001/7759/05.png')] bg-cover bg-center" />
             </div>
           </div>
         </div>
@@ -243,7 +241,7 @@ export default function Home() {
 
       {/* CTA */}
       <section className="py-24 px-4 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1605833556294-ea5c7a74f57d?q=80&w=2074')] bg-cover bg-center opacity-20" />
+        <div className="absolute inset-0 bg-[url('https://media.xmlcal.com/pic/p0001/7759/04.png')] bg-cover bg-center opacity-20" />
         <div className="absolute top-1/2 left-1/4 w-[400px] h-[400px] bg-amber-500/10 rounded-full blur-[100px]" />
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
