@@ -15,7 +15,7 @@ export default function Home() {
     if (!checkIn || !checkOut) return;
     const checkInFormatted = checkIn.replace(/-/g, '');
     const checkOutFormatted = checkOut.replace(/-/g, '');
-    router.push(`/book?checkIn=${checkInFormatted}&checkOut=${checkOutFormatted}&guests=${guests}`);
+    router.push(`/checkout?checkIn=${checkInFormatted}&checkOut=${checkOutFormatted}&guests=${guests}`);
   };
 
   const tomorrow = new Date();
@@ -166,7 +166,7 @@ export default function Home() {
               </div>
               
               <Link 
-                href="/book"
+                href="/checkout"
                 className="inline-block bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 font-bold py-4 px-8 rounded-xl hover:from-amber-400 hover:to-yellow-400 transition-all shadow-lg shadow-amber-500/25"
               >
                 Book Now
@@ -253,7 +253,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
-              href="/book"
+              href="/checkout"
               className="inline-block bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 font-bold py-4 px-8 rounded-xl hover:from-amber-400 hover:to-yellow-400 transition-all shadow-lg"
             >
               Book Your Stay
@@ -283,7 +283,7 @@ export default function Home() {
           <div>
             <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
             <ul className="space-y-2 text-slate-400 text-sm">
-              <li><Link href="/book" className="hover:text-white transition-colors">Book Now</Link></li>
+              <li><Link href="/checkout" className="hover:text-white transition-colors">Book Now</Link></li>
               <li><Link href="/gallery" className="hover:text-white transition-colors">Photo Gallery</Link></li>
               <li><Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
             </ul>

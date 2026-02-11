@@ -1,121 +1,220 @@
 /**
  * Beds24 API Client for Las Vegas Pool House
- * 
- * NOTE: Property ID needs to be set in environment variables
- * TODO: Get the correct property ID from Alex
+ * Property ID: 17759
+ * V2 API for rates/availability, V1 for booking creation
  */
 
-const BEDS24_API = 'https://api.beds24.com/json';
-
-// Las Vegas Pool House property
-const PROP_ID = process.env.BEDS24_PROP_ID || '17759';
-
-// Room configuration
-export const ROOM_INFO: Record<string, { name: string; maxGuests: number; minPrice: number }> = {
-  '43516': { name: 'Private Pool House', maxGuests: 12, minPrice: 299 },
-};
-
-export interface AvailabilityResult {
-  available: boolean;
-  price: number | null;
-  pricePerNight: number | null;
-  nights: number;
-  minNights: number;
-  bookingUrl?: string;
-  error?: string;
-}
-
+const BEDS24_V1_API = 'https://beds24.com/api/json';
+const BEDS24_V2_API = 'https://beds24.com/api/v2';
+const PROP_ID = 17759;
 const MIN_NIGHTS = 2;
 
-export async function getAvailability(
-  checkIn: string, // YYYYMMDD format
-  checkOut: string,
-  numAdult: number = 2
-): Promise<AvailabilityResult> {
-  // Calculate nights
-  const ciDate = new Date(checkIn.slice(0,4) + '-' + checkIn.slice(4,6) + '-' + checkIn.slice(6,8));
-  const coDate = new Date(checkOut.slice(0,4) + '-' + checkOut.slice(4,6) + '-' + checkOut.slice(6,8));
-  const nights = Math.ceil((coDate.getTime() - ciDate.getTime()) / (1000 * 60 * 60 * 24));
+// Room IDs for Las Vegas Pool House
+export const ROOM_IDS: Record<string, number> = {
+  'pool-house': 43516,
+};
 
-  // Check minimum nights requirement
+export const ROOM_INFO: Record<number, { name: string; slug: string; maxGuests: number; minPrice: number }> = {
+  43516: { name: 'Private Pool House', slug: 'pool-house', maxGuests: 12, minPrice: 299 },
+};
+
+function getV2Token(): string {
+  const token = process.env.BEDS24_V2_TOKEN;
+  if (!token) throw new Error('BEDS24_V2_TOKEN not configured');
+  return token;
+}
+
+function getV1ApiKey(): string {
+  const key = process.env.BEDS24_API_KEY;
+  if (!key) throw new Error('BEDS24_API_KEY not configured');
+  return key;
+}
+
+// ─── V2 API: Get offers (rates + availability) ───
+
+export interface RoomOffer {
+  roomId: number;
+  roomName: string;
+  slug: string;
+  available: boolean;
+  price: number | null;
+  nightlyRates: { date: string; rate: number }[];
+  maxGuests: number;
+}
+
+export async function getOffers(
+  arrival: string, // YYYY-MM-DD
+  departure: string, // YYYY-MM-DD
+  numAdults: number = 2
+): Promise<{ rooms: RoomOffer[]; nights: number; error?: string }> {
+  const arrDate = new Date(arrival);
+  const depDate = new Date(departure);
+  const nights = Math.ceil((depDate.getTime() - arrDate.getTime()) / (1000 * 60 * 60 * 24));
+
   if (nights < MIN_NIGHTS) {
-    return {
-      available: false,
-      price: null,
-      pricePerNight: null,
-      nights,
-      minNights: MIN_NIGHTS,
-      error: `Minimum stay is ${MIN_NIGHTS} nights`,
-    };
-  }
-
-  // If prop ID not configured, return placeholder availability
-  if (PROP_ID === 'NEEDS_CONFIG') {
-    console.warn('Beds24 PROP_ID not configured - returning placeholder data');
-    return {
-      available: true,
-      price: 299 * nights,
-      pricePerNight: 299,
-      nights,
-      minNights: MIN_NIGHTS,
-      bookingUrl: '#', // Will be Beds24 or Stripe checkout
-    };
+    return { rooms: [], nights, error: `Minimum stay is ${MIN_NIGHTS} nights` };
   }
 
   try {
-    const response = await fetch(BEDS24_API + '/getAvailabilities', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        checkIn,
-        lastNight: checkOut,
-        propId: PROP_ID,
-        numAdult,
-      }),
+    const url = `${BEDS24_V2_API}/inventory/rooms/offers?propertyId=${PROP_ID}&arrival=${arrival}&departure=${departure}&numAdults=${numAdults}`;
+    const res = await fetch(url, {
+      headers: { token: getV2Token() },
+      next: { revalidate: 300 }, // Cache 5 min
+    });
+    const data = await res.json();
+
+    if (!data.success) {
+      console.error('Beds24 offers error:', data.error);
+      return { rooms: [], nights, error: data.error };
+    }
+
+    const rooms: RoomOffer[] = (data.data || []).map((room: any) => {
+      const info = ROOM_INFO[room.roomId];
+      const offer = room.offers?.[0];
+      return {
+        roomId: room.roomId,
+        roomName: info?.name || `Room ${room.roomId}`,
+        slug: info?.slug || `room-${room.roomId}`,
+        available: !!offer,
+        price: offer?.price ?? null,
+        nightlyRates: offer?.dailyRates
+          ? Object.entries(offer.dailyRates).map(([date, rate]) => ({ date, rate: rate as number }))
+          : [],
+        maxGuests: info?.maxGuests || 12,
+      };
     });
 
-    const data = await response.json();
-    
-    // Check if any room is available
-    const roomKeys = Object.keys(data).filter(k => !['checkIn', 'lastNight', 'checkOut', 'propId', 'numAdult'].includes(k));
-    
-    let available = false;
-    let totalPrice = 0;
-    
-    for (const roomId of roomKeys) {
-      const room = data[roomId];
-      if (room?.roomsavail && room.roomsavail !== '0' && room.roomsavail !== 0) {
-        available = true;
-        if (room.price) {
-          totalPrice = room.price;
-        }
-        break; // Take first available room
-      }
-    }
-    
-    return {
-      available,
-      price: totalPrice || null,
-      pricePerNight: totalPrice ? Math.round(totalPrice / nights) : null,
-      nights,
-      minNights: MIN_NIGHTS,
-      bookingUrl: available ? `https://beds24.com/booking2.php?propid=${PROP_ID}&checkin=${checkIn}` : undefined,
-    };
-    
+    return { rooms, nights };
   } catch (error) {
-    console.error('Beds24 API error:', error);
-    return {
-      available: true, // Fallback to showing available
-      price: 299 * nights,
-      pricePerNight: 299,
-      nights,
-      minNights: MIN_NIGHTS,
-      error: 'Could not check real-time availability',
-    };
+    console.error('Beds24 offers fetch error:', error);
+    return { rooms: [], nights, error: 'Failed to fetch availability' };
   }
 }
 
-export async function getRoomDetails(roomId: string) {
-  // Placeholder - will implement when property ID is known
-  return ROOM_INFO[roomId] || { name: 'Pool House', maxGuests: 12, minPrice: 299 };
+// ─── V2 API: Get calendar rates (per-day pricing) ───
+
+export async function getCalendarRates(
+  roomId: number,
+  startDate: string, // YYYY-MM-DD
+  endDate: string
+): Promise<{ date: string; rate: number }[]> {
+  try {
+    const url = `${BEDS24_V2_API}/inventory/rooms/calendar?roomId=${roomId}&startDate=${startDate}&endDate=${endDate}`;
+    const res = await fetch(url, {
+      headers: { token: getV2Token() },
+    });
+    const data = await res.json();
+
+    if (!data.success || !data.data) return [];
+
+    return data.data.map((day: any) => ({
+      date: day.date,
+      rate: day.price1 || day.price || 0,
+    }));
+  } catch (error) {
+    console.error('Calendar rates error:', error);
+    return [];
+  }
+}
+
+// ─── V2 API: Create booking ───
+
+export interface BookingRequest {
+  roomId: number;
+  arrival: string; // YYYY-MM-DD
+  departure: string; // YYYY-MM-DD
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  numAdults: number;
+  numChildren?: number;
+  notes?: string;
+  totalPrice: number;
+  paymentMethod: 'stripe' | 'forte';
+  paymentId: string;
+}
+
+export async function createBooking(booking: BookingRequest): Promise<{ success: boolean; bookingId?: string; error?: string }> {
+  try {
+    const res = await fetch(`${BEDS24_V2_API}/bookings`, {
+      method: 'POST',
+      headers: {
+        token: getV2Token(),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify([{
+        roomId: booking.roomId,
+        arrival: booking.arrival,
+        departure: booking.departure,
+        status: 1, // confirmed
+        numAdult: booking.numAdults,
+        numChild: booking.numChildren || 0,
+        guestFirstName: booking.firstName,
+        guestName: booking.lastName,
+        guestEmail: booking.email,
+        guestPhone: booking.phone,
+        price: booking.totalPrice,
+        guestComments: booking.notes || '',
+        infoItems: [
+          {
+            code: 'payment_method',
+            text: booking.paymentMethod === 'stripe' ? 'Credit Card (Stripe)' : 'ACH (Forte)',
+          },
+          {
+            code: 'payment_id',
+            text: booking.paymentId,
+          },
+        ],
+      }]),
+    });
+
+    const data = await res.json();
+
+    if (data.success && data.data?.[0]?.id) {
+      return { success: true, bookingId: String(data.data[0].id) };
+    }
+
+    // Fallback to v1 if v2 fails
+    return await createBookingV1(booking);
+  } catch (error) {
+    console.error('Beds24 booking creation error:', error);
+    return { success: false, error: 'Failed to create booking' };
+  }
+}
+
+async function createBookingV1(booking: BookingRequest): Promise<{ success: boolean; bookingId?: string; error?: string }> {
+  try {
+    const res = await fetch(`${BEDS24_V1_API}/setBooking`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        authentication: { apiKey: getV1ApiKey() },
+        roomId: String(booking.roomId),
+        arrival: booking.arrival.replace(/-/g, ''),
+        departure: booking.departure.replace(/-/g, ''),
+        status: 1,
+        numAdult: booking.numAdults,
+        numChild: booking.numChildren || 0,
+        guestFirstName: booking.firstName,
+        guestName: booking.lastName,
+        guestEmail: booking.email,
+        guestPhone: booking.phone,
+        price: booking.totalPrice,
+        guestComments: `Payment: ${booking.paymentMethod.toUpperCase()} | ID: ${booking.paymentId}`,
+      }),
+    });
+
+    const data = await res.json();
+    const bookingId = data?.setBooking?.bookId || data?.setBooking?.bookingId;
+
+    if (bookingId) {
+      return { success: true, bookingId: String(bookingId) };
+    }
+
+    return { success: false, error: JSON.stringify(data) };
+  } catch (error) {
+    console.error('Beds24 v1 booking error:', error);
+    return { success: false, error: 'Failed to create booking via v1 API' };
+  }
 }
