@@ -21,21 +21,33 @@ export default function CancellationPage() {
 
         <h2>Short-Term Stays (Less than 30 Nights)</h2>
 
-        <h3>Full Refund</h3>
+        <p>
+          We offer two rate options for short-term stays. Choose the rate that best fits your travel plans:
+        </p>
+
+        <h3>Non-Refundable Rate (15% Discount)</h3>
         <ul>
-          <li>Cancel at least <strong>14 days before check-in:</strong> 100% refund</li>
+          <li><strong>Save 15% on your stay</strong></li>
+          <li><strong>No refunds for any reason</strong> (including cancellations, modifications, or early checkout)</li>
+          <li><strong>No-show:</strong> Full payment charged</li>
+          <li>Best for travelers with firm plans</li>
         </ul>
 
-        <h3>Partial Refund</h3>
+        <h3>Flexible Rate (Standard Pricing)</h3>
         <ul>
-          <li>Cancel <strong>7-13 days before check-in:</strong> 50% refund</li>
-        </ul>
-
-        <h3>No Refund</h3>
-        <ul>
+          <li>Cancel at least <strong>30 days before check-in:</strong> 100% refund</li>
+          <li>Cancel <strong>7-29 days before check-in:</strong> 50% refund</li>
           <li>Cancel <strong>less than 7 days before check-in:</strong> No refund</li>
           <li><strong>No-show:</strong> No refund</li>
         </ul>
+
+        <div className="my-6 p-4 bg-amber-50 border-l-4 border-amber-500">
+          <p className="text-sm text-amber-900 mb-0">
+            <strong>💡 Tip:</strong> We strongly recommend purchasing <strong>travel insurance</strong> to protect your investment, 
+            especially with non-refundable rates. Travel insurance can cover cancellations due to illness, emergencies, 
+            or other unforeseen circumstances.
+          </p>
+        </div>
 
         <h2>Extended Stays (30+ Nights)</h2>
 
@@ -117,12 +129,6 @@ export default function CancellationPage() {
         <p>
           Approved refunds will be processed within 7-10 business days to the original payment method. 
           Please allow additional time for your bank to process the refund.
-        </p>
-
-        <h2>Travel Insurance</h2>
-        <p>
-          We strongly recommend purchasing travel insurance to protect against unexpected cancellations due to illness, 
-          emergencies, or other unforeseen circumstances. Travel insurance is not provided by ATW Properties.
         </p>
 
         <h2>Contact Us</h2>

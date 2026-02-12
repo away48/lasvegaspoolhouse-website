@@ -34,7 +34,17 @@ export default function TermsPage() {
           <li>Valid government-issued photo ID required at check-in</li>
           <li>Guest name on booking must match ID presented</li>
           <li>Maximum occupancy limits must be respected</li>
+          <li><strong>Incidentals deposit required prior to check-in</strong> (amount varies by property, typically $200-$500)</li>
         </ul>
+
+        <div className="my-6 p-4 bg-blue-50 border-l-4 border-blue-500">
+          <p className="text-sm text-blue-900 mb-2"><strong>📋 Pre-Check-In Requirements:</strong></p>
+          <p className="text-sm text-blue-800 mb-0">
+            Before check-in, you will be required to provide a valid government-issued photo ID and authorize an 
+            incidentals deposit. The deposit covers potential damages, excessive cleaning, missing items, or policy violations. 
+            It will be refunded within 7-14 days after checkout if no issues are found.
+          </p>
+        </div>
 
         <h2>3. Payment Terms</h2>
         <h3>3.1 Payment Methods</h3>
