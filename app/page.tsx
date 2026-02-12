@@ -8,14 +8,17 @@ export default function Home() {
   const router = useRouter();
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
-  const [guests, setGuests] = useState('4');
+  const [guests, setGuests] = useState('2');
+  const [loading, setLoading] = useState(false);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!checkIn || !checkOut) return;
+    
     const checkInFormatted = checkIn.replace(/-/g, '');
     const checkOutFormatted = checkOut.replace(/-/g, '');
-    router.push(`/checkout?checkIn=${checkInFormatted}&checkOut=${checkOutFormatted}&guests=${guests}`);
+    
+    router.push(`/rooms?checkIn=${checkInFormatted}&checkOut=${checkOutFormatted}&guests=${guests}`);
   };
 
   const tomorrow = new Date();
@@ -25,179 +28,149 @@ export default function Home() {
   return (
     <main id="main-content" className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center overflow-hidden">
-        {/* Vegas lights effect */}
-        <div className="absolute inset-0 bg-[url('https://media.xmlcal.com/pic/p0001/7759/33.png')] bg-cover bg-center opacity-40" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-slate-900/50" />
+      <section className="relative h-[80vh] bg-gradient-to-br from-primary via-slate-800 to-blue-900 flex items-center justify-center">
+        <div className="absolute inset-0 bg-[url('https://media.xmlcal.com/pic/p0000/7757/01.png')] bg-cover bg-center opacity-30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
         
-        {/* Animated glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-500/20 rounded-full blur-[120px] animate-pulse" />
-        
-        <div className="relative z-10 text-center text-white px-4 max-w-5xl mx-auto">
-          <div className="mb-6">
-            <span className="inline-block px-4 py-2 bg-amber-500/20 border border-amber-500/30 rounded-full text-amber-300 text-sm font-medium backdrop-blur-sm">
-              ✨ Private Pool House in Las Vegas
-            </span>
-          </div>
-          
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
-            <span className="bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent">
-              Las Vegas Pool House
-            </span>
+        <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
+          <h1 className="text-5xl md:text-7xl font-bold mb-4 tracking-tight">
+            Las Vegas Pool House
           </h1>
-          
-          <p className="text-xl md:text-2xl text-slate-300 mb-10 font-light max-w-2xl mx-auto">
-            Your Private Oasis Minutes from the Strip
+          <p className="text-xl md:text-2xl text-slate-300 mb-8 font-light">
+            Your Home Away From Home in Nevada&apos;s Largest City
           </p>
           
-          {/* Search Form */}
-          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 shadow-2xl max-w-3xl mx-auto border border-white/20">
-            <form onSubmit={handleSearch} className="grid md:grid-cols-4 gap-6">
+          {/* Quick Search */}
+          <div className="bg-white/95 backdrop-blur rounded-2xl p-6 md:p-8 shadow-2xl max-w-2xl mx-auto">
+            <form onSubmit={handleSearch} role="search" aria-label="Property search" className="grid md:grid-cols-4 gap-4">
               <div className="text-left">
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+                <label htmlFor="check-in" className="block text-sm font-medium text-slate-700 mb-2">
                   Check In
                 </label>
                 <input 
+                  id="check-in"
                   type="date" 
                   min={minDate}
                   value={checkIn}
                   onChange={(e) => setCheckIn(e.target.value)}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   required
+                  aria-required="true"
                 />
               </div>
               <div className="text-left">
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+                <label htmlFor="check-out" className="block text-sm font-medium text-slate-700 mb-2">
                   Check Out
                 </label>
                 <input 
+                  id="check-out"
                   type="date"
                   min={checkIn || minDate}
                   value={checkOut}
                   onChange={(e) => setCheckOut(e.target.value)}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   required
+                  aria-required="true"
                 />
               </div>
               <div className="text-left">
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+                <label htmlFor="guests" className="block text-sm font-medium text-slate-700 mb-2">
                   Guests
                 </label>
                 <select 
+                  id="guests"
                   value={guests}
                   onChange={(e) => setGuests(e.target.value)}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  aria-label="Number of guests"
                 >
-                  {[2,3,4,5,6,7,8].map(n => (
-                    <option key={n} value={n} className="bg-slate-900">{n} Guests</option>
-                  ))}
+                  <option value="1">1 Guest</option>
+                  <option value="2">2 Guests</option>
+                  <option value="3">3 Guests</option>
+                  <option value="4">4 Guests</option>
+                  <option value="5">5 Guests</option>
+                  <option value="6">6 Guests</option>
                 </select>
               </div>
               <div className="flex items-end">
                 <button 
                   type="submit"
-                  className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-900 font-bold py-3 px-6 rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-amber-500/30"
+                  disabled={loading}
+                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold py-3 px-6 rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-blue-500/25"
                 >
-                  Check Availability
+                  {loading ? 'Searching...' : 'Search'}
                 </button>
               </div>
             </form>
-          </div>
-        </div>
-        
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-2">
-            <div className="w-1 h-3 bg-white/50 rounded-full" />
-          </div>
-        </div>
-      </section>
-
-      {/* Property Highlights */}
-      <section className="py-24 px-4 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Your Private <span className="text-amber-500">Vegas Retreat</span>
-            </h2>
-            <p className="text-slate-600 text-lg max-w-2xl mx-auto">
-              Escape the crowds and enjoy your own private pool house, 
-              just minutes from all the action
+            
+            <p className="text-sm text-slate-500 mt-4">
+              4 unique properties • Weekly rates available • Book direct &amp; save
             </p>
           </div>
-          
-          {/* Main property card */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
-            <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-slate-200 to-slate-300 relative group">
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent z-10" />
-              <div className="absolute bottom-6 left-6 z-20 text-white">
-                <p className="text-amber-400 font-medium mb-1">Featured Property</p>
-                <h3 className="text-3xl font-bold">The Pool House</h3>
-              </div>
-              <div className="w-full h-full bg-[url('https://media.xmlcal.com/pic/p0001/7759/02.png')] bg-cover bg-center group-hover:scale-105 transition-transform duration-500" />
-            </div>
-            
-            <div>
-              <h3 className="text-3xl font-bold mb-6">Luxury Meets Location</h3>
-              <p className="text-slate-600 text-lg mb-8">
-                Our stunning pool house offers the perfect blend of Vegas excitement 
-                and peaceful retreat. With a private pool, modern amenities, and 
-                space for groups up to 8, it&apos;s ideal for bachelor/bachelorette parties, 
-                family reunions, or a getaway with friends.
-              </p>
-              
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                {[
-                  { icon: '🏊', label: 'Private Pool' },
-                  { icon: '🛏️', label: 'Sleeps up to 8' },
-                  { icon: '🚗', label: 'Free Parking' },
-                  { icon: '📍', label: '10 min to Strip' },
-                ].map(item => (
-                  <div key={item.label} className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
-                    <span className="text-2xl">{item.icon}</span>
-                    <span className="font-medium text-slate-700">{item.label}</span>
-                  </div>
-                ))}
-              </div>
-              
-              <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-4xl font-bold text-slate-900">From $299</span>
-                <span className="text-slate-500">/night</span>
-              </div>
-              
-              <Link 
-                href="/checkout"
-                className="inline-block bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 font-bold py-4 px-8 rounded-xl hover:from-amber-400 hover:to-yellow-400 transition-all shadow-lg shadow-amber-500/25"
-              >
-                Book Now
-              </Link>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* Amenities */}
-      <section className="py-24 px-4 bg-slate-50">
+      {/* Properties Preview */}
+      <section className="py-20 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Everything You Need</h2>
-          <p className="text-slate-600 text-center mb-16 max-w-2xl mx-auto">
-            Premium amenities for the ultimate Vegas experience
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Our Properties</h2>
+          <p className="text-slate-600 text-center mb-12 max-w-2xl mx-auto">
+            Choose from four unique furnished apartments in prime Anchorage locations
           </p>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: '🏊', title: 'Private Pool', desc: 'Your own heated pool with lounge area' },
-              { icon: '🍳', title: 'Full Kitchen', desc: 'Gourmet kitchen for group meals' },
-              { icon: '📺', title: 'Entertainment', desc: 'Smart TVs, sound system, game room' },
-              { icon: '❄️', title: 'Climate Control', desc: 'AC throughout for desert comfort' },
-              { icon: '🛋️', title: 'Spacious Living', desc: 'Open floor plan for gatherings' },
-              { icon: '🧺', title: 'Washer/Dryer', desc: 'In-unit laundry facilities' },
-              { icon: '📶', title: 'Fast WiFi', desc: 'High-speed internet for streaming' },
-              { icon: '🔒', title: 'Secure Entry', desc: 'Keyless entry, gated community' },
+              { name: 'Pool House', type: '1 Bedroom', guests: '2 guests', price: 'From $125/night', image: 'https://media.xmlcal.com/pic/p0001/7757/42.png' },
+              { name: 'Pool House', type: '1 Bedroom', guests: '2 guests', price: 'From $125/night', image: 'https://media.xmlcal.com/pic/p0001/7757/62.png' },
+              { name: 'Pool House', type: '2 Bedroom', guests: '4 guests', price: 'From $165/night', image: 'https://media.xmlcal.com/pic/p0001/7757/46.png' },
+              { name: 'Pool House', type: '2 Bedroom', guests: '4 guests', price: 'From $165/night', image: 'https://media.xmlcal.com/pic/p0001/7757/40.png' },
+            ].map((unit) => (
+              <div key={unit.name} className="group cursor-pointer">
+                <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-slate-200 mb-4 relative">
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent z-10" />
+                  <div className="absolute bottom-4 left-4 z-20 text-white">
+                    <p className="text-sm opacity-90">{unit.type}</p>
+                    <p className="font-semibold">{unit.name}</p>
+                  </div>
+                  <div className="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-300" style={{backgroundImage: `url(${unit.image})`}} />
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-600 text-sm">{unit.guests}</span>
+                  <span className="font-semibold text-blue-600">{unit.price}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="text-center mt-12">
+            <Link 
+              href="/rooms"
+              className="inline-block bg-slate-900 hover:bg-slate-800 text-white font-semibold py-4 px-8 rounded-xl transition-colors"
+            >
+              View All Properties
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="py-20 px-4 bg-slate-50">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Why Stay With Us?</h2>
+          <p className="text-slate-600 text-center mb-12 max-w-2xl mx-auto">
+            More than a hotel room — a real home for your Anchorage stay
+          </p>
+          
+          <div className="grid md:grid-cols-4 gap-8">
+            {[
+              { icon: '🏔️', title: 'Prime Location', desc: 'Minutes from downtown, trails, and attractions' },
+              { icon: '🛋️', title: 'Fully Furnished', desc: 'Everything you need from day one' },
+              { icon: '📶', title: 'Fast WiFi', desc: 'Work remotely with reliable high-speed internet' },
+              { icon: '🚗', title: 'Free Parking', desc: 'Off-street parking included with every unit' },
             ].map((feature) => (
-              <div key={feature.title} className="p-6 bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow">
-                <div className="text-4xl mb-4">{feature.icon}</div>
-                <h3 className="font-bold text-lg mb-2">{feature.title}</h3>
+              <div key={feature.title} className="text-center p-6 rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow">
+                <div className="text-5xl mb-4">{feature.icon}</div>
+                <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>
                 <p className="text-slate-600 text-sm">{feature.desc}</p>
               </div>
             ))}
@@ -206,61 +179,58 @@ export default function Home() {
       </section>
 
       {/* Location */}
-      <section className="py-24 px-4 bg-white">
+      <section className="py-20 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">Prime Vegas Location</h2>
-              <p className="text-slate-600 text-lg mb-8">
-                Located in a quiet residential neighborhood yet just minutes from 
-                everything Vegas has to offer. The best of both worlds.
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Explore Anchorage</h2>
+              <p className="text-slate-600 mb-6">
+                Nevada&apos;s largest city offers incredible outdoor adventures, vibrant culture, 
+                and stunning mountain views. Our properties put you in the heart of it all.
               </p>
               
-              <ul className="space-y-4">
+              <ul className="space-y-3">
                 {[
-                  '🎰 Las Vegas Strip — 10 minutes',
-                  '✈️ Harry Reid Airport — 15 minutes',
-                  '🎪 Fremont Street — 12 minutes',
-                  '🛒 Shopping & Dining — 5 minutes',
-                  '⛳ Golf Courses — 10 minutes',
-                  '🏜️ Red Rock Canyon — 25 minutes',
+                  '🚶 Downtown & 5th Ave Mall — 0.6 miles (14 min walk)',
+                  '🎓 UAA (University of Nevada) — 3.3 miles (10 min)',
+                  '🏥 Providence Hospital — 3.8 miles (13 min)',
+                  '✈️ Ted Stevens Airport — 5.5 miles (12 min)',
+                  '🏥 Nevada Regional Hospital — 2.4 miles (9 min)',
+                  '🛤️ Tony Knowles Coastal Trail — 1.3 miles',
                 ].map((item) => (
-                  <li key={item} className="flex items-center gap-3 text-slate-700">
-                    <span>{item}</span>
+                  <li key={item} className="flex items-center gap-3">
+                    <span className="text-blue-500">✓</span>
+                    <span className="text-slate-700">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
             
-            <div className="aspect-square rounded-3xl overflow-hidden shadow-xl bg-slate-200">
-              <div className="w-full h-full bg-[url('https://media.xmlcal.com/pic/p0001/7759/05.png')] bg-cover bg-center" />
+            <div className="aspect-video rounded-2xl overflow-hidden shadow-lg bg-slate-200">
+              <div className="w-full h-full bg-[url('https://media.xmlcal.com/pic/p0001/7757/01.png')] bg-cover bg-center" />
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-24 px-4 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://media.xmlcal.com/pic/p0001/7759/04.png')] bg-cover bg-center opacity-20" />
-        <div className="absolute top-1/2 left-1/4 w-[400px] h-[400px] bg-amber-500/10 rounded-full blur-[100px]" />
-        
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            Ready to Experience <span className="text-amber-400">Vegas Your Way?</span>
-          </h2>
-          <p className="text-slate-300 text-lg mb-10 max-w-2xl mx-auto">
-            Skip the hotel crowds. Book your private pool house retreat today.
+      <section className="py-20 px-4 bg-gradient-to-br from-blue-600 to-blue-700 text-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Book Your Stay?</h2>
+          <p className="text-blue-100 mb-8 text-lg">
+            Whether you&apos;re visiting for business, relocation, or adventure, 
+            we have the perfect place for you.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
-              href="/checkout"
-              className="inline-block bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 font-bold py-4 px-8 rounded-xl hover:from-amber-400 hover:to-yellow-400 transition-all shadow-lg"
+              href="/rooms"
+              className="inline-block bg-white text-blue-600 font-semibold py-4 px-8 rounded-xl hover:bg-blue-50 transition-colors shadow-lg"
             >
-              Book Your Stay
+              Browse Properties
             </Link>
             <a 
-              href="tel:+17025551234"
-              className="inline-block bg-white/10 backdrop-blur text-white font-semibold py-4 px-8 rounded-xl hover:bg-white/20 transition-all border border-white/20"
+              href="tel:+19073123456"
+              className="inline-block bg-blue-500 text-white font-semibold py-4 px-8 rounded-xl hover:bg-blue-400 transition-colors border-2 border-blue-400"
             >
               Call Us
             </a>
@@ -269,22 +239,20 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 bg-slate-900 text-white">
+      <footer role="contentinfo" className="py-12 px-4 bg-slate-900 text-white">
         <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
           <div>
-            <h3 className="font-bold text-lg mb-4 text-amber-400">Las Vegas Pool House</h3>
+            <h3 className="font-semibold text-lg mb-4">Las Vegas Pool House</h3>
             <p className="text-slate-400 text-sm">
-              Las Vegas, NV<br />
-              <a href="mailto:info@lasvegaspoolhouse.com" className="hover:text-white transition-colors">
-                info@lasvegaspoolhouse.com
-              </a>
+              Anchorage, AK 99501<br />
+              <a href="mailto:info@atwproperties.com" className="hover:text-white transition-colors">info@atwproperties.com</a>
             </p>
           </div>
           <div>
             <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
             <ul className="space-y-2 text-slate-400 text-sm">
-              <li><Link href="/checkout" className="hover:text-white transition-colors">Book Now</Link></li>
-              <li><Link href="/gallery" className="hover:text-white transition-colors">Photo Gallery</Link></li>
+              <li><Link href="/rooms" className="hover:text-white transition-colors">All Properties</Link></li>
+              <li><Link href="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
               <li><Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
             </ul>
           </div>

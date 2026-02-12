@@ -110,7 +110,7 @@ function StripePaymentForm({
         )}`}
       </button>
       <p className="text-xs text-slate-500 mt-2 text-center">
-        Includes 3% credit card processing fee
+        {pricing.isLongTerm ? 'Includes 3% credit card processing fee' : 'No additional fees'}
       </p>
     </form>
   );
@@ -187,7 +187,7 @@ function ACHPaymentForm({
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-1">Routing Number</label>
         <input
-          type="text"
+          type="text" id="first-name" aria-required="true"
           value={routingNumber}
           onChange={(e) => setRoutingNumber(e.target.value.replace(/\D/g, '').slice(0, 9))}
           className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -200,7 +200,7 @@ function ACHPaymentForm({
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-1">Account Number</label>
         <input
-          type="text"
+          type="text" id="first-name" aria-required="true"
           value={accountNumber}
           onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, ''))}
           className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -211,7 +211,7 @@ function ACHPaymentForm({
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-1">Confirm Account Number</label>
         <input
-          type="text"
+          type="text" id="first-name" aria-required="true"
           value={confirmAccountNumber}
           onChange={(e) => setConfirmAccountNumber(e.target.value.replace(/\D/g, ''))}
           className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -238,7 +238,7 @@ function ACHPaymentForm({
         {processing ? 'Processing...' : `Pay ${formatCurrency(chargeAmount)} via ACH`}
       </button>
       <p className="text-xs text-slate-500 text-center">
-        No processing fee — save 3% with bank transfer
+        {pricing.isLongTerm ? 'No processing fee — save 3% with bank transfer' : 'No additional fees'}
       </p>
     </form>
   );
@@ -338,7 +338,7 @@ function CheckoutContent() {
 
   if (paymentSuccess) {
     return (
-      <main className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+      <main id="main-content" className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
         <div className="bg-white rounded-2xl p-8 max-w-lg w-full shadow-lg text-center">
           <div className="text-6xl mb-4">✅</div>
           <h1 className="text-2xl font-bold mb-2">Booking Confirmed!</h1>
@@ -364,7 +364,7 @@ function CheckoutContent() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <main id="main-content" className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-slate-600">Calculating your rates...</p>
@@ -375,7 +375,7 @@ function CheckoutContent() {
 
   if (error || !pricingData) {
     return (
-      <main className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+      <main id="main-content" className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
         <div className="bg-white rounded-2xl p-8 max-w-lg w-full shadow-lg text-center">
           <div className="text-6xl mb-4">😔</div>
           <h1 className="text-xl font-bold mb-2">Unable to Process</h1>
@@ -391,7 +391,7 @@ function CheckoutContent() {
   const { pricing, room } = pricingData;
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main id="main-content" className="min-h-screen bg-slate-50">
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="text-xl font-bold text-slate-900">Stay Anchorage</Link>
@@ -411,9 +411,9 @@ function CheckoutContent() {
                 <h2 className="text-xl font-bold mb-4">Guest Information</h2>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">First Name</label>
+                    <label htmlFor="first-name" className="block text-sm font-medium text-slate-700 mb-1">First Name</label>
                     <input
-                      type="text"
+                      type="text" id="first-name" aria-required="true"
                       value={guestInfo.firstName}
                       onChange={(e) => setGuestInfo({ ...guestInfo, firstName: e.target.value })}
                       className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500"
@@ -421,9 +421,9 @@ function CheckoutContent() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Last Name</label>
+                    <label htmlFor="last-name" className="block text-sm font-medium text-slate-700 mb-1">Last Name</label>
                     <input
-                      type="text"
+                      type="text" id="first-name" aria-required="true"
                       value={guestInfo.lastName}
                       onChange={(e) => setGuestInfo({ ...guestInfo, lastName: e.target.value })}
                       className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500"
@@ -432,7 +432,7 @@ function CheckoutContent() {
                   </div>
                 </div>
                 <div className="mt-4">
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
+                  <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">Email</label>
                   <input
                     type="email"
                     value={guestInfo.email}
@@ -442,7 +442,7 @@ function CheckoutContent() {
                   />
                 </div>
                 <div className="mt-4">
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Phone</label>
+                  <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-1">Phone</label>
                   <input
                     type="tel"
                     value={guestInfo.phone}
@@ -487,7 +487,7 @@ function CheckoutContent() {
                       }`}
                     >
                       <div className="text-lg font-semibold mb-1">💳 Credit Card</div>
-                      <div className="text-sm text-slate-500">3% processing fee</div>
+                      <div className="text-sm text-slate-500">{pricing.isLongTerm ? '3% processing fee' : 'No additional fees'}</div>
                       <div className="text-lg font-bold mt-2 text-blue-600">
                         {formatCurrency(
                           pricing.isLongTerm && pricing.billingSchedule?.length
@@ -506,7 +506,7 @@ function CheckoutContent() {
                       }`}
                     >
                       <div className="text-lg font-semibold mb-1">🏦 Bank Transfer</div>
-                      <div className="text-sm text-green-600 font-medium">No processing fee!</div>
+                      <div className="text-sm text-green-600 font-medium">{pricing.isLongTerm ? 'No processing fee — save 3%!' : 'No additional fees'}</div>
                       <div className="text-lg font-bold mt-2 text-green-600">
                         {formatCurrency(
                           pricing.isLongTerm && pricing.billingSchedule?.length
@@ -611,13 +611,15 @@ function CheckoutContent() {
               )}
 
               {paymentMethod === 'card' && guestInfoConfirmed && (
+                {pricing.isLongTerm && (
                 <div className="border-t mt-4 pt-4 text-xs text-slate-500">
                   <p>💳 Credit card: +{formatCurrency(
-                    pricing.isLongTerm && pricing.billingSchedule?.length
+                    pricing.billingSchedule?.length
                       ? pricing.billingSchedule[0].totalWithCCFee - pricing.billingSchedule[0].total
                       : pricing.ccFeeAmount
                   )} processing fee (3%)</p>
                 </div>
+                )}
               )}
 
               {paymentMethod === 'ach' && guestInfoConfirmed && (
