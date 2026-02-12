@@ -291,6 +291,7 @@ export default function Home() {
           <div>
             <h3 className="font-semibold text-lg mb-4">Policies</h3>
             <ul className="space-y-2 text-slate-400 text-sm">
+              <li><Link href="/accessibility" className="hover:text-white transition-colors">Accessibility</Link></li>
               <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
               <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
               <li><Link href="/cancellation" className="hover:text-white transition-colors">Cancellation Policy</Link></li>
