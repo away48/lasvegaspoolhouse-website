@@ -23,7 +23,7 @@ export default function Home() {
   const minDate = tomorrow.toISOString().split('T')[0];
 
   return (
-    <main className="min-h-screen">
+    <main id="main-content" className="min-h-screen">
       {/* Hero Section */}
       <section className="relative h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center overflow-hidden">
         {/* Vegas lights effect */}
