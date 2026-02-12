@@ -413,42 +413,50 @@ function CheckoutContent() {
                   <div>
                     <label htmlFor="first-name" className="block text-sm font-medium text-slate-700 mb-1">First Name</label>
                     <input
-                      type="text" id="first-name" aria-required="true"
+                      id="first-name"
+                      type="text"
                       value={guestInfo.firstName}
                       onChange={(e) => setGuestInfo({ ...guestInfo, firstName: e.target.value })}
                       className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                       required
+                      aria-required="true"
                     />
                   </div>
                   <div>
                     <label htmlFor="last-name" className="block text-sm font-medium text-slate-700 mb-1">Last Name</label>
                     <input
-                      type="text" id="first-name" aria-required="true"
+                      id="last-name"
+                      type="text"
                       value={guestInfo.lastName}
                       onChange={(e) => setGuestInfo({ ...guestInfo, lastName: e.target.value })}
                       className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                       required
+                      aria-required="true"
                     />
                   </div>
                 </div>
                 <div className="mt-4">
                   <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">Email</label>
                   <input
+                    id="email"
                     type="email"
                     value={guestInfo.email}
                     onChange={(e) => setGuestInfo({ ...guestInfo, email: e.target.value })}
                     className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                     required
+                    aria-required="true"
                   />
                 </div>
                 <div className="mt-4">
                   <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-1">Phone</label>
                   <input
+                    id="phone"
                     type="tel"
                     value={guestInfo.phone}
                     onChange={(e) => setGuestInfo({ ...guestInfo, phone: e.target.value })}
                     className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500"
                     required
+                    aria-required="true"
                   />
                 </div>
                 <button
