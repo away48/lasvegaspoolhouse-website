@@ -23,9 +23,10 @@ export default function AccessibilityPage() {
 
         <h2>Conformance Status</h2>
         <p>
-          We strive to conform to the Web Content Accessibility Guidelines (WCAG) 2.1 Level AA. 
+          We are working toward conformance with the Web Content Accessibility Guidelines (WCAG) 2.1 Level AA. 
           These guidelines explain how to make web content more accessible for people with disabilities 
-          and user-friendly for everyone.
+          and user-friendly for everyone. We recognize that our website may not yet meet all accessibility 
+          standards and are actively working to improve.
         </p>
 
         <h2>Measures to Support Accessibility</h2>
