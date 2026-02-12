@@ -110,7 +110,7 @@ function StripePaymentForm({
         )}`}
       </button>
       <p className="text-xs text-slate-500 mt-2 text-center">
-        {pricing.isLongTerm ? 'Includes 3% credit card processing fee' : 'No additional fees'}
+        {pricingData.pricing.isLongTerm ? 'Includes 3% credit card processing fee' : 'No additional fees'}
       </p>
     </form>
   );
@@ -185,9 +185,9 @@ function ACHPaymentForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">Routing Number</label>
+        <label htmlFor="routing-number" className="block text-sm font-medium text-slate-700 mb-1">Routing Number</label>
         <input
-          type="text" id="first-name" aria-required="true"
+          type="text" id="routing-number" aria-required="true"
           value={routingNumber}
           onChange={(e) => setRoutingNumber(e.target.value.replace(/\D/g, '').slice(0, 9))}
           className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -198,9 +198,9 @@ function ACHPaymentForm({
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">Account Number</label>
+        <label htmlFor="account-number" className="block text-sm font-medium text-slate-700 mb-1">Account Number</label>
         <input
-          type="text" id="first-name" aria-required="true"
+          type="text" id="account-number" aria-required="true"
           value={accountNumber}
           onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, ''))}
           className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -209,9 +209,9 @@ function ACHPaymentForm({
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">Confirm Account Number</label>
+        <label htmlFor="confirm-account-number" className="block text-sm font-medium text-slate-700 mb-1">Confirm Account Number</label>
         <input
-          type="text" id="first-name" aria-required="true"
+          type="text" id="confirm-account-number" aria-required="true"
           value={confirmAccountNumber}
           onChange={(e) => setConfirmAccountNumber(e.target.value.replace(/\D/g, ''))}
           className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -238,7 +238,7 @@ function ACHPaymentForm({
         {processing ? 'Processing...' : `Pay ${formatCurrency(chargeAmount)} via ACH`}
       </button>
       <p className="text-xs text-slate-500 text-center">
-        {pricing.isLongTerm ? 'No processing fee — save 3% with bank transfer' : 'No additional fees'}
+        {pricingData.pricing.isLongTerm ? 'No processing fee — save 3% with bank transfer' : 'No additional fees'}
       </p>
     </form>
   );
@@ -618,8 +618,7 @@ function CheckoutContent() {
                 </div>
               )}
 
-              {paymentMethod === 'card' && guestInfoConfirmed && (
-                {pricing.isLongTerm && (
+              {paymentMethod === 'card' && guestInfoConfirmed && pricing.isLongTerm && (
                 <div className="border-t mt-4 pt-4 text-xs text-slate-500">
                   <p>💳 Credit card: +{formatCurrency(
                     pricing.billingSchedule?.length
@@ -627,7 +626,6 @@ function CheckoutContent() {
                       : pricing.ccFeeAmount
                   )} processing fee (3%)</p>
                 </div>
-                )}
               )}
 
               {paymentMethod === 'ach' && guestInfoConfirmed && (

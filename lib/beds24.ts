@@ -218,3 +218,15 @@ async function createBookingV1(booking: BookingRequest): Promise<{ success: bool
     return { success: false, error: 'Failed to create booking via v1 API' };
   }
 }
+
+export async function getAvailability(checkIn: string, checkOut: string, guests: number) {
+  const { rooms, nights, error } = await getOffers(checkIn, checkOut, guests);
+  if (error) return { rooms: [], nights, error };
+  return {
+    rooms: rooms.map(r => ({
+      ...r,
+      available: true,
+    })),
+    nights,
+  };
+}
