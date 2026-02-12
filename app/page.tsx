@@ -88,7 +88,7 @@ export default function Home() {
                   onChange={(e) => setGuests(e.target.value)}
                   className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
                 >
-                  {[2,3,4,5,6,7,8,10,12].map(n => (
+                  {[2,3,4,5,6,7,8].map(n => (
                     <option key={n} value={n} className="bg-slate-900">{n} Guests</option>
                   ))}
                 </select>
@@ -142,14 +142,14 @@ export default function Home() {
               <p className="text-slate-600 text-lg mb-8">
                 Our stunning pool house offers the perfect blend of Vegas excitement 
                 and peaceful retreat. With a private pool, modern amenities, and 
-                space for groups up to 12, it&apos;s ideal for bachelor/bachelorette parties, 
+                space for groups up to 8, it&apos;s ideal for bachelor/bachelorette parties, 
                 family reunions, or a getaway with friends.
               </p>
               
               <div className="grid grid-cols-2 gap-4 mb-8">
                 {[
                   { icon: '🏊', label: 'Private Pool' },
-                  { icon: '🛏️', label: 'Sleeps 8-12' },
+                  { icon: '🛏️', label: 'Sleeps up to 8' },
                   { icon: '🚗', label: 'Free Parking' },
                   { icon: '📍', label: '10 min to Strip' },
                 ].map(item => (
